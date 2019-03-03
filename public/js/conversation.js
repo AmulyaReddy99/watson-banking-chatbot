@@ -138,7 +138,7 @@ var ConversationPanel = (function() {
         msg.rate = 10 / 10;
         msg.pitch = 1;
         msg.text = newPayload.output.text;
-
+        msg.lang = "hi-IN"
         msg.onend = function(e) {
             console.log('Finished in ' + event.elapsedTime + ' seconds.');
         };
