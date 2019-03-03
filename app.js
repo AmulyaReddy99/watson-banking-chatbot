@@ -129,6 +129,13 @@ app.post('/api/message', function(req, res) {
         let inputstring = '';
         googleTranslate.translate(inputstring_original, 'en', function(err, translation) {
           console.log(translation.translatedText);
+          // const fileContent = readStream.read();
+          fs.readFile('inputText.log', async function(err, data) {
+            const writeStream = await fs.createWriteStream('inputText.log');
+            writeStream.write(data +"\n"+ translation.translatedText);
+            writeStream.end();
+          });
+
           // =>  Mi nombre es Brandon
           inputstring = translation.translatedText;
           console.log('input string ', inputstring);
@@ -173,14 +180,14 @@ app.post('/api/message', function(req, res) {
    * Send the input to the Assistant service.
    * @param payload
    */
-  function callAssistant(payload, inputstring_original) {
+  async function callAssistant(payload, inputstring_original) {
     const queryInput = JSON.stringify(payload.input);
 
     const toneParams = {
       tone_input: { text: queryInput },
       content_type: 'application/json'
     };
-    toneAnalyzer.tone(toneParams, function(err, tone) {
+    await toneAnalyzer.tone(toneParams, function(err, tone) {
       let toneAngerScore = '';
       if (err) {
         console.log('Error occurred while invoking Tone analyzer. ::', err);
@@ -328,7 +335,7 @@ app.post('/api/message', function(req, res) {
               let inputLanguage = '';
               if (err) throw err;
               // console.log(inputLanguage.toString().trim()=="und");
-                console.log("++++++++++++++++++++++++++++")
+              console.log('++++++++++++++++++++++++++++');
               if (!isNaN(parseInt(inputstring_original))) {
                 if (req.cookies.userData) {
                   inputLanguage = await req.cookies.userData.lang;
